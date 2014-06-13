@@ -16,7 +16,7 @@ describe ActiveTriples::Validators::TypeValidator do
       property :license, :predicate => RDF::DC.license, :class_name => DummyLicense
       property :title, :predicate => RDF::DC.title
 
-      validate :license
+      validate :license, :type => true
     end
   end
 
