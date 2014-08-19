@@ -79,6 +79,9 @@ module ActiveTriples
       define_method name do
         instance_eval(&parent).get_values(name.to_sym)
       end
+      define_method "#{name}_ids" do
+        instance_eval(&parent).get_value_ids(name.to_sym)
+      end
     end
   end
 end

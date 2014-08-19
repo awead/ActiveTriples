@@ -291,6 +291,13 @@ module ActiveTriples
       get_term(args)
     end
 
+    def get_value_ids(property_name)
+      property = properties[property_name]
+      query(subject: rdf_subject, predicate: property.predicate).objects.to_a.map { |o| o.is_a?(RDF::Resource) ? o : nil }
+      # Term.new(self, [property_name]).map { |i| i.rdf_subject || nil }
+      # return values.map { |i| if property.class_name.nil?
+    end
+
     def get_term(args)
       @term_cache ||= {}
       term = Term.new(self, args)
