@@ -301,26 +301,41 @@ describe ActiveTriples::Resource do
   describe 'property_ids methods' do
     before do
       DummyLicense.configure :type => RDF::DC.LicenseDocument
-
-      class LocalLicense < ActiveTriples::Resource
-        configure :type => RDF::URI('http://example.org/MyLicenseClass')
-        property :title, :predicate => RDF::DC.title
-      end
-
-      DummyResource.property :local_license, :predicate => RDF::DC.license, :class_name => LocalLicense
-      DummyResource.property :literal_license, :predicate => RDF::DC.license
-      subject.license = license
     end
 
     let(:license) { DummyLicense.new }
 
     it 'can get ids' do
+      subject.license = license
       expect(subject.license_ids).to eq [license.rdf_subject]
     end
 
     it 'returns nil where there is no id' do
+      subject.license = license
       subject.license << 'A Value'
       expect(subject.license_ids).to eq [license.rdf_subject, nil]
+    end
+
+    context 'with multiple properties per predicate' do
+      before do
+        class LocalLicense < ActiveTriples::Resource
+          configure :type => RDF::URI('http://example.org/MyLicenseClass')
+          property :title, :predicate => RDF::DC.title
+        end
+
+        DummyResource.property :local_license, :predicate => RDF::DC.license, :class_name => LocalLicense
+      end
+
+      after do
+        Object.send(:remove_const, "LocalLicense")
+      end
+
+      it 'distinguishes properties from predicates' do
+        subject.license = license
+        subject.license << 'A Value'
+        subject.local_license = LocalLicense.new(RDF::URI('http://example.org/educational_use'))
+        expect(subject.local_license_ids).to eq [RDF::URI('http://example.org/educational_use')]
+      end
     end
   end
 
