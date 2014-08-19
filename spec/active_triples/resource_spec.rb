@@ -298,6 +298,32 @@ describe ActiveTriples::Resource do
     end
   end
 
+  describe 'property_ids methods' do
+    before do
+      DummyLicense.configure :type => RDF::DC.LicenseDocument
+
+      class LocalLicense < ActiveTriples::Resource
+        configure :type => RDF::URI('http://example.org/MyLicenseClass')
+        property :title, :predicate => RDF::DC.title
+      end
+
+      DummyResource.property :local_license, :predicate => RDF::DC.license, :class_name => LocalLicense
+      DummyResource.property :literal_license, :predicate => RDF::DC.license
+      subject.license = license
+    end
+
+    let(:license) { DummyLicense.new }
+
+    it 'can get ids' do
+      expect(subject.license_ids).to eq [license.rdf_subject]
+    end
+
+    it 'returns nil where there is no id' do
+      subject.license << 'A Value'
+      expect(subject.license_ids).to eq [license.rdf_subject, nil]
+    end
+  end
+
   describe '#set_value' do
     it 'should set a value in the graph' do
       subject.set_value(RDF::DC.title, 'Comet in Moominland')
