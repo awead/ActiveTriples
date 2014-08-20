@@ -333,6 +333,13 @@ describe ActiveTriples::Resource do
       expect(subject.title).to eq ['Comet in Moominland']
     end
 
+    it 'should overwrite old values' do
+      subject[:license] = DummyLicense.new.tap { |l| l.title = 'cc-by' }
+      license = DummyLicense.new.tap { |l| l.title = 'cc-by-nc' }
+      subject[:license] = license
+      expect(subject.license).to eq [license]
+    end
+
     it "raise an error if the value is not a URI, Node, Literal, RdfResource, or string" do
       expect { subject[RDF::DC.title] = Object.new }.to raise_error
     end
