@@ -1,25 +1,10 @@
 require 'spec_helper'
 
 describe ActiveTriples::Resource do
+
+  include_context 'shared resource'
   it_behaves_like 'an ActiveModel'
-  before do
-    class DummyLicense < ActiveTriples::Resource
-      property :title, :predicate => RDF::DC.title
-    end
-
-    class DummyResource < ActiveTriples::Resource
-      configure :type => RDF::URI('http://example.org/SomeClass')
-      property :license, :predicate => RDF::DC.license, :class_name => DummyLicense
-      property :title, :predicate => RDF::DC.title
-    end
-  end
-  after do
-    Object.send(:remove_const, "DummyResource") if Object
-    Object.send(:remove_const, "DummyLicense") if Object
-  end
-
-  subject { DummyResource.new }
-
+  
   describe 'rdf_subject' do
     it "should be a blank node if we haven't set it" do
       expect(subject.rdf_subject.node?).to be true
