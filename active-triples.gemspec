@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency('rdf', '~> 1.1')
   s.add_dependency('linkeddata', '~> 1.1')
+  s.add_dependency('rdf-reasoner', '~> 0.1')
   s.add_dependency('activemodel')
   s.add_dependency('deprecation', '~> 0.1')
   s.add_dependency('activesupport')
